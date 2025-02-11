@@ -232,16 +232,15 @@ async function PlayerVsPlayerPlayGame(event) {
 			ballSpeed += ballHitX || ballHitY ? acceleration : 0;
 			padelSpeed = ballSpeed;
 
-			let home_scored = ball.position.x - ballRadius > extremes.right + padelsSize.width;
-			let away_scored = ball.position.x + ballRadius < extremes.left - padelsSize.width;
-			let someone_scored = home_scored || away_scored;
-			if (someone_scored) {
+			let home_scored = ball.position.x > rightPadel.position.x;
+			let away_scored = ball.position.x < leftPadel.position.x;
+			if (home_scored || away_scored) {
 				ball.position.set(0, 0, ballRadius);
 				ball_dir.x = -ball_dir.x;
 				ballSpeed = gameSpeed;
 				padelSpeed = gameSpeed;
-				scoreHome += home_scored;
-				scoreAway += away_scored;
+				if (home_scored) scoreHome++;
+				else if (away_scored) scoreAway++;
 				updateScoreDiv(scoreHome, scoreAway, numbers);
 			}
 

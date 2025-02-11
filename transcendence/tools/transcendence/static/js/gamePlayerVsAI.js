@@ -191,63 +191,55 @@ async function PlayerVsAIPlayGame(event) {
 
 		updateScoreDiv(scoreHome, scoreAway, numbers);
 		updateAliasNames(gameData.players.home_player.alias_name, gameData.players.away_player.alias_name);
-	
-	let botRefreshTime = 1000;
-	let lastRefreshTime = 0;
-	let futureBallY = 0;
-	let botReactionTime = Math.random() * (30 - 20) + 20;
-	let lastBotMoveTime = 0;
-	const extremesWall = {
-		top: topWall.position.y - wallSizes.height / 2,
-		bottom: bottomWall.position.y + wallSizes.height / 2,
-	};
- 
-	function updateBallPrediction()   
-	{
-		const currentTime = Date.now();
-		if (currentTime - lastRefreshTime >= botRefreshTime)
-		{
-			let ballX = ball.position.x;
-			let ballY = ball.position.y;
-			let ballXSpeed = ball_dir.x * ballSpeed;
-			let ballYSpeed = ball_dir.y * ballSpeed;
-			while(ballX < rightPadel.position.x && ball_dir.x > 0)
-			{
-				ballX += ballXSpeed;
-				ballY += ballYSpeed;
-				if (ballY + ballRadius > extremesWall.top)
-				{
-					ballY = extremesWall.top - ballRadius;
-					ballYSpeed *= -1;
+
+		let botRefreshTime = 1000;
+		let lastRefreshTime = 0;
+		let futureBallY = 0;
+		let botReactionTime = Math.random() * (30 - 20) + 20;
+		let lastBotMoveTime = 0;
+		const extremesWall = {
+			top: topWall.position.y - wallSizes.height / 2,
+			bottom: bottomWall.position.y + wallSizes.height / 2,
+		};
+
+		function updateBallPrediction() {
+			const currentTime = Date.now();
+			if (currentTime - lastRefreshTime >= botRefreshTime) {
+				let ballX = ball.position.x;
+				let ballY = ball.position.y;
+				let ballXSpeed = ball_dir.x * ballSpeed;
+				let ballYSpeed = ball_dir.y * ballSpeed;
+				while (ballX < rightPadel.position.x && ball_dir.x > 0) {
+					ballX += ballXSpeed;
+					ballY += ballYSpeed;
+					if (ballY + ballRadius > extremesWall.top) {
+						ballY = extremesWall.top - ballRadius;
+						ballYSpeed *= -1;
+					}
+					else if (ballY - ballRadius < extremesWall.bottom) {
+						ballY = extremesWall.bottom + ballRadius;
+						ballYSpeed *= -1;
+					}
 				}
-				else if (ballY - ballRadius < extremesWall.bottom)
-				{
-					ballY = extremesWall.bottom + ballRadius;
-					ballYSpeed *= -1;
-				}
+				futureBallY = Math.max(extremesWall.bottom + (padelsSize.height / 2), Math.min(ballY, extremesWall.top - (padelsSize.height / 2)));
+				lastRefreshTime = currentTime;
 			}
-			futureBallY = Math.max(extremesWall.bottom + (padelsSize.height / 2), Math.min(ballY, extremesWall.top - (padelsSize.height / 2)));
-			lastRefreshTime = currentTime;
 		}
-	}
-	
-	function moveBot()
-	{
-		let currentTime = Date.now();
-		if (currentTime - lastBotMoveTime < botReactionTime)
-			return;
-		lastBotMoveTime = currentTime;
-		updateBallPrediction(); 
-		if (futureBallY > (rightPadel.position.y + padelsSize.height / 3))
-		{
-			moveBoxUp(rightPadel, padelSpeed, ball, ball_dir, topWall);
+
+		function moveBot() {
+			let currentTime = Date.now();
+			if (currentTime - lastBotMoveTime < botReactionTime)
+				return;
+			lastBotMoveTime = currentTime;
+			updateBallPrediction();
+			if (futureBallY > (rightPadel.position.y + padelsSize.height / 3)) {
+				moveBoxUp(rightPadel, padelSpeed, ball, ball_dir, topWall);
+			}
+			else if (futureBallY < (rightPadel.position.y - padelsSize.height / 3)) {
+				moveBoxDown(rightPadel, padelSpeed, ball, ball_dir, bottomWall);
+			}
 		}
-		else if (futureBallY < (rightPadel.position.y - padelsSize.height / 3))
-		{
-			moveBoxDown(rightPadel, padelSpeed, ball, ball_dir, bottomWall);
-		}
-	}
-		//let powerUp = false; faz parte do powerUp
+
 		async function gameLoop() {
 			if (lock || pause) return;
 
@@ -266,39 +258,6 @@ async function PlayerVsAIPlayGame(event) {
 				await changePage(event, currentApp, currentPage, false);
 				return;
 			}
-			// if ((scoreAway === maxPoints / 2 || scoreHome === maxPoints / 2) && !powerUp)
-			// {
-			// 	powerUp = true;
-			// 	const leftPadelPosition = leftPadel.position.clone();
-			// 	const rightPadelPosition = rightPadel.position.clone();
-
-			// 	leftPadel.geometry.dispose();
-			// 	leftPadel.material.dispose();
-			// 	rightPadel.geometry.dispose();
-			// 	rightPadel.material.dispose();
-
-			// 	padelsSize.height *= 1.7;
-			// 	scene.remove(leftPadel, rightPadel);
-			// 	leftPadel = createBox(
-			// 		padelsSize.width, 
-			// 		padelsSize.height, 
-			// 		padelsSize.depth, 
-			// 		gameData.config.left_padel, 
-			// 		leftPadelPosition.x, 
-			// 		leftPadelPosition.y, 
-			// 		leftPadelPosition.z
-			// 	);
-			// 	rightPadel = createBox(
-			// 		padelsSize.width, 
-			// 		padelsSize.height, 
-			// 		padelsSize.depth, 
-			// 		gameData.config.right_padel, 
-			// 		rightPadelPosition.x, 
-			// 		rightPadelPosition.y, 
-			// 		rightPadelPosition.z
-			// 	);
-			// 	scene.add(leftPadel, rightPadel);
-			// }
 
 			if (scoreHome === maxPoints || scoreAway === maxPoints) {
 				gameTimestamp = Date.now();
@@ -320,16 +279,15 @@ async function PlayerVsAIPlayGame(event) {
 			ballSpeed += ballHitX || ballHitY ? acceleration : 0;
 			padelSpeed = ballSpeed;
 
-			let home_scored = ball.position.x - ballRadius > extremes.right + padelsSize.width;
-			let away_scored = ball.position.x + ballRadius < extremes.left - padelsSize.width;
-			let someone_scored = home_scored || away_scored;
-			if (someone_scored) {
+			let home_scored = ball.position.x > rightPadel.position.x;
+			let away_scored = ball.position.x < leftPadel.position.x;
+			if (home_scored || away_scored) {
 				ball.position.set(0, 0, ballRadius);
 				ball_dir.x = -ball_dir.x;
 				ballSpeed = gameSpeed;
 				padelSpeed = gameSpeed;
-				scoreHome += home_scored;
-				scoreAway += away_scored;
+				if (home_scored) scoreHome++;
+				else if (away_scored) scoreAway++;
 				updateScoreDiv(scoreHome, scoreAway, numbers);
 			}
 
