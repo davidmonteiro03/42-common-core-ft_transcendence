@@ -54,16 +54,14 @@ async function Tournament(event) {
 		const gameHeight = gameAction.clientHeight;
 
 		renderer = new THREE.WebGLRenderer();
-		renderer.shadowMap.enabled = true;
-		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 		renderer.setClearColor(0x000000, 0);
 		renderer.setSize(gameWidth, gameHeight);
 		gameAction.appendChild(renderer.domElement);
 
 		const scene = new THREE.Scene();
 		const camera = new THREE.PerspectiveCamera(75, gameWidth / gameHeight, 0.1, 1000);
-		const lightIntensity = 0.3;
-		const lightColor = 0xffffff;
+		const lightIntensity = 1;
+		const lightColor = 0x444444;
 		const cameraZoom = 1.2;
 
 		const fieldWidth = gameAction.clientWidth / 2;
@@ -114,13 +112,6 @@ async function Tournament(event) {
 			wallConfig, 0, (fieldHeight - wallSizes.height) / 2, wallSizes.depth / 2);
 		const bottomWall = createBox(wallSizes.width, wallSizes.height, wallSizes.depth,
 			wallConfig, 0, -(fieldHeight - wallSizes.height) / 2, wallSizes.depth / 2);
-
-		const extremes = {
-			top: fieldHeight / 2,
-			bottom: -fieldHeight / 2,
-			left: -fieldWidth / 2,
-			right: fieldWidth / 2
-		};
 
 		// Lights
 		const mainLight = createLight(lightColor, lightIntensity, 0, 0, fieldHeight * 2);

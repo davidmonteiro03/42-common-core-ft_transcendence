@@ -37,9 +37,9 @@ class PasswordValidator:
     def validate(self, password: str, user=None):
         if len(password) < min_pass_length:
             raise ValidationError(message=translation.gettext('logs_error_password_1 %(min_pass_length)s') % {'min_pass_length': min_pass_length})
-        if not any(char.islower() for char in password):
-            raise ValidationError(message=translation.gettext('logs_error_password_2'))
         if not any(char.isupper() for char in password):
+            raise ValidationError(message=translation.gettext('logs_error_password_2'))
+        if not any(char.islower() for char in password):
             raise ValidationError(message=translation.gettext('logs_error_password_3'))
         if not any(char.isdigit() for char in password):
             raise ValidationError(message=translation.gettext('logs_error_password_4'))
