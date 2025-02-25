@@ -1,5 +1,5 @@
 function createLight(color = 0xffffff, intensity = 0.5, x = 0, y = 0, z = 0) {
-	const light = new THREE.DirectionalLight(color, intensity);
+	const light = new THREE.SpotLight(color, intensity);
 	light.position.set(x, y, z);
 	light.castShadow = true;
 	return light;
@@ -19,6 +19,7 @@ function createSphere(radius = 1, widthSegments = 32, heightSegments = 32, confi
 	const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 	sphere.position.set(x, y, z);
 	sphere.castShadow = true;
+	sphere.receiveShadow = true;
 	return sphere;
 }
 
@@ -28,5 +29,6 @@ function createBox(width = 1, height = 1, depth = 1, config = {}, x = 0, y = 0, 
 	const box = new THREE.Mesh(boxGeometry, boxMaterial);
 	box.position.set(x, y, z);
 	box.castShadow = true;
+	box.receiveShadow = true;
 	return box;
 }

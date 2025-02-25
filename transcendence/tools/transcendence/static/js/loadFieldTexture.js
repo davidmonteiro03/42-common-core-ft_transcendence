@@ -9,7 +9,7 @@ async function loadFieldTexture(file, field_width, field_height) {
 				texture.needsUpdate = true;
 				texture.wrapS = THREE.ClampToEdgeWrapping;
 				texture.wrapT = THREE.ClampToEdgeWrapping;
-				texture.encoding = THREE.sRGBEncoding;
+				texture.format = THREE.RGBAFormat;
 				const imageAspect = image.width / image.height;
 				const fieldAspect = field_width / field_height;
 				if (imageAspect > fieldAspect) {

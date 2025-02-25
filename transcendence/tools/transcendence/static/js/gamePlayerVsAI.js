@@ -19,7 +19,7 @@ async function PlayerVsAIPlayGame(event) {
 
 		const scene = new THREE.Scene();
 		const camera = new THREE.PerspectiveCamera(75, gameWidth / gameHeight, 0.1, 1000);
-		const lightIntensity = 0.5;
+		const lightIntensity = 0.3;
 		const lightColor = 0xffffff;
 		const cameraZoom = 1.2;
 
