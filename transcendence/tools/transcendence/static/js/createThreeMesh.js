@@ -1,5 +1,5 @@
 function createLight(color = 0xffffff, intensity = 0.5, x = 0, y = 0, z = 0) {
-	const light = new THREE.SpotLight(color, intensity);
+	const light = new THREE.DirectionalLight(color, intensity);
 	light.position.set(x, y, z);
 	return light;
 }
