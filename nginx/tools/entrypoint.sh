@@ -50,6 +50,8 @@ server {
     ssl_certificate_key $key_file;
     ssl_protocols TLSv1.2 TLSv1.3;
 
+    client_max_body_size 1G;
+
     location / {
         proxy_pass http://transcendence:$DJANGO_PORT;
         proxy_set_header Host \$host;
